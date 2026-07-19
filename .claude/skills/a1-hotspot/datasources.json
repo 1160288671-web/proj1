@@ -1,0 +1,306 @@
+{
+  "version": "0.2",
+  "updated_at": "2026-07-19",
+  "output": {
+    "path": "data/hot_raw.json",
+    "top_n_per_source": 20,
+    "dedup": "cross_source_keep",
+    "dedup_note": "跨源重复条目保留（重复本身是热度信号），去重判断归 A2"
+  },
+  "defaults": {
+    "method": "GET",
+    "timeout_sec": 15,
+    "retry": 0,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+  },
+  "sources": [
+    {
+      "id": "weibo_hot",
+      "name": "微博热搜",
+      "platform": "weibo",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://weibo.com/ajax/side/hotSearch",
+      "headers": { "Referer": "https://weibo.com/" },
+      "params": {},
+      "list_path": "data.realtime",
+      "field_map": {
+        "title": "word",
+        "heat_score": "num",
+        "rank": "realpos",
+        "url": null,
+        "domain_tag": "flag_desc"
+      },
+      "url_template": "https://s.weibo.com/weibo?q={title}",
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "微博热搜官方加权热度指数",
+        "magnitude_observed": "1e6（百万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 52,
+        "sample_file": "testdemo/api_probe/weibo_hot_search.json"
+      },
+      "notes": "半官方接口，无需登录。flag_desc 仅部分条目有值（如“剧集”“综艺”），空时回落 default_domain"
+    },
+    {
+      "id": "baidu_hot",
+      "name": "百度热搜",
+      "platform": "baidu",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://top.baidu.com/api/board?platform=pc&tab=realtime",
+      "headers": { "Referer": "https://top.baidu.com/board" },
+      "params": {},
+      "list_path": "data.cards.0.content",
+      "field_map": {
+        "title": "word",
+        "heat_score": "hotScore",
+        "rank": "index",
+        "url": "url",
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "百度热搜热度值（字符串数字，需转 int）",
+        "magnitude_observed": "1e7（千万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 50,
+        "sample_file": "testdemo/api_probe/baidu_board.json"
+      },
+      "notes": "platform=pc 变体才返回 hotScore；platform=wise 无热度值。列表嵌套两层 content，list_path 数字段为数组下标"
+    },
+    {
+      "id": "toutiao_hot",
+      "name": "头条热榜",
+      "platform": "toutiao",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc",
+      "headers": {},
+      "params": {},
+      "list_path": "data",
+      "field_map": {
+        "title": "Title",
+        "heat_score": "HotValue",
+        "rank": null,
+        "url": "Url",
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "头条热榜热度值",
+        "magnitude_observed": "1e7（千万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 50,
+        "sample_file": "testdemo/api_probe/toutiao_hot_board.json"
+      },
+      "notes": "字段名为大驼峰。无 rank 字段，数组顺序即排名，由采集器按顺序补 rank"
+    },
+    {
+      "id": "bilibili_hot_search",
+      "name": "B站热搜",
+      "platform": "bilibili",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://api.bilibili.com/x/web-interface/search/square?limit=10",
+      "headers": {},
+      "params": {},
+      "list_path": "data.trending.list",
+      "field_map": {
+        "title": "show_name",
+        "heat_score": "heat_score",
+        "rank": null,
+        "url": null,
+        "domain_tag": null
+      },
+      "url_template": "https://search.bilibili.com/all?keyword={title}",
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "B站热搜热度值",
+        "magnitude_observed": "1e6（百万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 10,
+        "sample_file": "testdemo/api_probe/bilibili_search_square.json"
+      },
+      "notes": "官方接口，条目少（约 10 条）但带热度值，最接近“热榜”语义"
+    },
+    {
+      "id": "bilibili_popular",
+      "name": "B站热门视频",
+      "platform": "bilibili",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1",
+      "headers": {},
+      "params": {},
+      "list_path": "data.list",
+      "field_map": {
+        "title": "title",
+        "heat_score": "stat.view",
+        "rank": null,
+        "url": null,
+        "domain_tag": "tname"
+      },
+      "url_template": "https://www.bilibili.com/video/{bvid}",
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "视频播放量（stat.view，非热搜指数）",
+        "magnitude_observed": "1e6（百万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 20,
+        "sample_file": "testdemo/api_probe/bilibili_popular.json"
+      },
+      "notes": "无热搜指数，以播放量代热度。tname 是视频分区（如“手机游戏”），是最可靠的领域标签来源"
+    },
+    {
+      "id": "xiaohongshu_hot",
+      "name": "小红书热点",
+      "platform": "xiaohongshu",
+      "enabled": false,
+      "type": "json_api",
+      "url": "",
+      "headers": {},
+      "params": {},
+      "list_path": "",
+      "field_map": {
+        "title": null,
+        "heat_score": null,
+        "rank": null,
+        "url": null,
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "未知",
+        "magnitude_observed": "未知",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "unavailable",
+        "item_count": 0,
+        "sample_file": null
+      },
+      "notes": "无公开热榜接口。已验证：韩小韩、DailyHot 公共实例域名均无法解析。可选路径：①自建开源聚合服务（如 DailyHot）；②付费聚合 API（需 API key）；③暂时放弃该平台，v1 用其余 5 源"
+    },
+    {
+      "id": "backup_60s_weibo",
+      "name": "60s聚合-微博（备用）",
+      "platform": "weibo",
+      "enabled": false,
+      "type": "json_api",
+      "url": "https://60s-api.viki.moe/v2/weibo",
+      "headers": {},
+      "params": {},
+      "list_path": "data",
+      "field_map": {
+        "title": "title",
+        "heat_score": "hot_value",
+        "rank": "rank",
+        "url": "link",
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "微博热度值（与官方一致，为中转）",
+        "magnitude_observed": "1e6（百万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 50,
+        "sample_file": "testdemo/api_probe/60s_weibo.json"
+      },
+      "notes": "第三方中转，字段已归一（title/hot_value/link），官方接口失效时启用"
+    },
+    {
+      "id": "backup_60s_toutiao",
+      "name": "60s聚合-头条（备用）",
+      "platform": "toutiao",
+      "enabled": false,
+      "type": "json_api",
+      "url": "https://60s-api.viki.moe/v2/toutiao",
+      "headers": {},
+      "params": {},
+      "list_path": "data",
+      "field_map": {
+        "title": "title",
+        "heat_score": "hot_value",
+        "rank": null,
+        "url": "link",
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "头条热度值（与官方一致，为中转）",
+        "magnitude_observed": "1e7（千万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 50,
+        "sample_file": "testdemo/api_probe/60s_toutiao.json"
+      },
+      "notes": "第三方中转，官方接口失效时启用"
+    },
+    {
+      "id": "backup_60s_baidu",
+      "name": "60s聚合-百度（备用）",
+      "platform": "baidu",
+      "enabled": false,
+      "type": "json_api",
+      "url": "https://60s-api.viki.moe/v2/baidu/hot",
+      "headers": {},
+      "params": {},
+      "list_path": "data",
+      "field_map": {
+        "title": "title",
+        "heat_score": null,
+        "rank": "rank",
+        "url": "link",
+        "domain_tag": null
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "该中转不含热度值，仅 rank",
+        "magnitude_observed": "无",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-19",
+        "status": "ok",
+        "item_count": 50,
+        "sample_file": null
+      },
+      "notes": "备用通道，无热度字段，heat_score 将为 0"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+[
+  {
+    "id": "bilibili_popular",
+    "desc": "B站热门视频(官方)",
+    "url": "https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1",
+    "ok": true,
+    "status": 200,
+    "ms": 142,
+    "error": null,
+    "top_keys": [
+      "code",
+      "message",
+      "ttl",
+      "data"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "bilibili_search_square",
+    "desc": "B站热搜(官方)",
+    "url": "https://api.bilibili.com/x/web-interface/search/square?limit=10",
+    "ok": true,
+    "status": 200,
+    "ms": 66,
+    "error": null,
+    "top_keys": [
+      "code",
+      "message",
+      "ttl",
+      "data"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "toutiao_hot_board",
+    "desc": "头条热榜(半官方)",
+    "url": "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc",
+    "ok": true,
+    "status": 200,
+    "ms": 167,
+    "error": null,
+    "top_keys": [
+      "data",
+      "fixed_top_data",
+      "fixed_top_style",
+      "impr_id",
+      "status"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "weibo_hot_search",
+    "desc": "微博热搜(半官方)",
+    "url": "https://weibo.com/ajax/side/hotSearch",
+    "ok": true,
+    "status": 200,
+    "ms": 219,
+    "error": null,
+    "top_keys": [
+      "ok",
+      "data",
+      "logs",
+      "topLogs"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "baidu_board",
+    "desc": "百度热搜(半官方)",
+    "url": "https://top.baidu.com/api/board?platform=wise&tab=realtime",
+    "ok": true,
+    "status": 200,
+    "ms": 168,
+    "error": null,
+    "top_keys": [
+      "success",
+      "data",
+      "error"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "vvhan_weibo",
+    "desc": "韩小韩-微博",
+    "url": "https://api.vvhan.com/api/hotlist/wbHot",
+    "ok": false,
+    "status": null,
+    "ms": 11,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api.vvhan.com', port=443): Max retries exceeded with url: /api/hotlist/wbHot (Caused by NameResolutionError(\"HTTPSConnection(host='api.vvhan.com', port=443): Failed to resolve 'api.vvhan.com' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "vvhan_bili",
+    "desc": "韩小韩-B站",
+    "url": "https://api.vvhan.com/api/hotlist/bili",
+    "ok": false,
+    "status": null,
+    "ms": 0,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api.vvhan.com', port=443): Max retries exceeded with url: /api/hotlist/bili (Caused by NameResolutionError(\"HTTPSConnection(host='api.vvhan.com', port=443): Failed to resolve 'api.vvhan.com' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "vvhan_baidu",
+    "desc": "韩小韩-百度",
+    "url": "https://api.vvhan.com/api/hotlist/baiduRD",
+    "ok": false,
+    "status": null,
+    "ms": 1,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api.vvhan.com', port=443): Max retries exceeded with url: /api/hotlist/baiduRD (Caused by NameResolutionError(\"HTTPSConnection(host='api.vvhan.com', port=443): Failed to resolve 'api.vvhan.com' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "vvhan_toutiao",
+    "desc": "韩小韩-头条",
+    "url": "https://api.vvhan.com/api/hotlist/toutiao",
+    "ok": false,
+    "status": null,
+    "ms": 0,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api.vvhan.com', port=443): Max retries exceeded with url: /api/hotlist/toutiao (Caused by NameResolutionError(\"HTTPSConnection(host='api.vvhan.com', port=443): Failed to resolve 'api.vvhan.com' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "vvhan_xhs",
+    "desc": "韩小韩-小红书",
+    "url": "https://api.vvhan.com/api/hotlist/xhs",
+    "ok": false,
+    "status": null,
+    "ms": 1,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api.vvhan.com', port=443): Max retries exceeded with url: /api/hotlist/xhs (Caused by NameResolutionError(\"HTTPSConnection(host='api.vvhan.com', port=443): Failed to resolve 'api.vvhan.com' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "60s_weibo",
+    "desc": "60s-微博",
+    "url": "https://60s-api.viki.moe/v2/weibo",
+    "ok": true,
+    "status": 200,
+    "ms": 2671,
+    "error": null,
+    "top_keys": [
+      "code",
+      "message",
+      "data"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "60s_toutiao",
+    "desc": "60s-头条",
+    "url": "https://60s-api.viki.moe/v2/toutiao",
+    "ok": true,
+    "status": 200,
+    "ms": 2739,
+    "error": null,
+    "top_keys": [
+      "code",
+      "message",
+      "data"
+    ],
+    "item_count": null
+  },
+  {
+    "id": "60s_bili",
+    "desc": "60s-B站",
+    "url": "https://60s-api.viki.moe/v2/bili",
+    "ok": false,
+    "status": 500,
+    "ms": 1938,
+    "error": "HTTP 500",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "dailyhot_weibo",
+    "desc": "DailyHot公共实例-微博",
+    "url": "https://api-hot.imsyy.top/weibo",
+    "ok": false,
+    "status": null,
+    "ms": 8,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api-hot.imsyy.top', port=443): Max retries exceeded with url: /weibo (Caused by NameResolutionError(\"HTTPSConnection(host='api-hot.imsyy.top', port=443): Failed to resolve 'api-hot.imsyy.top' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  },
+  {
+    "id": "dailyhot_xhs",
+    "desc": "DailyHot公共实例-小红书",
+    "url": "https://api-hot.imsyy.top/xiaohongshu",
+    "ok": false,
+    "status": null,
+    "ms": 1,
+    "error": "ConnectionError: HTTPSConnectionPool(host='api-hot.imsyy.top', port=443): Max retries exceeded with url: /xiaohongshu (Caused by NameResolutionError(\"HTTPSConnection(host='api-hot.imsyy.top', port=443): Failed to resolve 'api-hot.imsyy.top' ([Errno 11001] getaddrinfo failed)\"))",
+    "top_keys": null,
+    "item_count": null
+  }
+]

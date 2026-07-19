@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Bash",
+      "WebSearch",
+      "WebFetch"
+    ],
+    "deny": [
+      "Bash(sudo)",
+      "Bash(rm -rf)",
+      "Bash(git push --force)"
+    ]
+  },
+  "resources": {
+    "max_file_size_mb": 50,
+    "allowed_working_dir": "d:\\carrey\\proj\\proj1"
+  },
+  "hooks": {
+    "pre_tool_use": ".claude/hooks/pre-tool-use.sh",
+    "post_tool_use": ".claude/hooks/post-tool-use.sh",
+    "on_stop": ".claude/hooks/stop.sh"
+  }
+}
