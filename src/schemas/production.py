@@ -42,3 +42,4 @@ class ProductionOutput(BaseModel):
     bgm: BgmParams
     assets: list[Asset] = Field(default_factory=list)
     render: RenderParams = Field(default_factory=RenderParams)
+    output_video: str = Field(default="", description="渲染输出的视频文件路径")

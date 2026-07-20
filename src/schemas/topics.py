@@ -1,5 +1,5 @@
 """A2 输出：topics.json"""
-from typing import Literal, Optional
+from typing import Literal
 from pydantic import BaseModel, Field
 
 from .meta import Meta
@@ -11,7 +11,7 @@ class Score(BaseModel):
     safety: int = Field(..., ge=1, le=5, description="安全性 1-5")
     feasibility: int = Field(..., ge=1, le=5, description="可制作性 1-5")
     material_richness: int = Field(..., ge=1, le=5, description="素材丰富度预判 1-5")
-    total: int = Field(..., description="加权总分")
+    total: float = Field(..., description="加权总分")
 
 
 class Topic(BaseModel):
@@ -21,8 +21,8 @@ class Topic(BaseModel):
     domains: list[str] = Field(..., description="关联领域")
     title_candidate: str = Field(..., description="候选标题")
     keywords: list[str] = Field(..., description="关键词")
-    combo_hypotheses: Optional[list[str]] = Field(
-        None, description="组合假设（仅 combo 必填，写不出即淘汰）"
+    combo_hypotheses: list[str] = Field(
+        default_factory=list, description="组合假设（仅 combo 必填，写不出即淘汰）"
     )
     experience_hint: str = Field(..., description="建议体验定位")
     scores: Score
@@ -32,4 +32,4 @@ class Topic(BaseModel):
 class TopicsOutput(BaseModel):
     """A2 输出：topics.json"""
     meta: Meta
-    topics: list[Topic] = Field(..., min_length=1, max_length=3, description="恰好 1-3 个选题")
+    topics: list[Topic] = Field(default_factory=list, max_length=3, description="0-3 个选题")

@@ -9,6 +9,7 @@ class PublishOutput(BaseModel):
     """A6 输出：publish.json"""
     meta: Meta
     video_id: str = Field(..., description="视频唯一 ID")
+    script_id: str = Field(default="", description="关联的脚本 ID")
     topic_id: str = Field(..., description="关联的选题 ID")
     platform: str = Field(default="douyin", description="目标平台", examples=["douyin", "bilibili", "kuaishou"])
     title: str = Field(..., description="最终标题")
@@ -18,3 +19,4 @@ class PublishOutput(BaseModel):
     review_status: Literal["pending_human", "approved", "rejected"] = Field(
         default="pending_human", description="人工审核状态"
     )
+    video_file: str = Field(default="", description="视频文件路径")
