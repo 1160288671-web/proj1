@@ -1,11 +1,15 @@
 {
-  "version": "0.2",
-  "updated_at": "2026-07-19",
+  "version": "0.3",
+  "updated_at": "2026-07-22",
   "output": {
     "path": "data/hot_raw.json",
     "top_n_per_source": 20,
     "dedup": "cross_source_keep",
-    "dedup_note": "跨源重复条目保留（重复本身是热度信号），去重判断归 A2"
+    "dedup_note": "跨源重复条目保留（重复本身是热度信号），去重判断归 A2",
+    "list_types": {
+      "hot": "实时热度榜：当前最热内容，按热度绝对值排序",
+      "rising": "实时增量榜：上升最快的条目，按增长率/变化量排序"
+    }
   },
   "defaults": {
     "method": "GET",
@@ -18,6 +22,7 @@
       "id": "weibo_hot",
       "name": "微博热搜",
       "platform": "weibo",
+      "list_type": "hot",
       "enabled": true,
       "type": "json_api",
       "url": "https://weibo.com/ajax/side/hotSearch",
@@ -29,7 +34,8 @@
         "heat_score": "num",
         "rank": "realpos",
         "url": null,
-        "domain_tag": "flag_desc"
+        "domain_tag": "flag_desc",
+        "trend": "label_name"
       },
       "url_template": "https://s.weibo.com/weibo?q={title}",
       "default_domain": "综合",
@@ -44,12 +50,13 @@
         "item_count": 52,
         "sample_file": "testdemo/api_probe/weibo_hot_search.json"
       },
-      "notes": "半官方接口，无需登录。flag_desc 仅部分条目有值（如“剧集”“综艺”），空时回落 default_domain"
+      "notes": "半官方接口。flag_desc 仅部分条目有值（如“剧集”“综艺”），空时回落 default_domain。label_name 为趋势标记（新/热/爆）"
     },
     {
       "id": "baidu_hot",
       "name": "百度热搜",
       "platform": "baidu",
+      "list_type": "hot",
       "enabled": true,
       "type": "json_api",
       "url": "https://top.baidu.com/api/board?platform=pc&tab=realtime",
@@ -61,7 +68,8 @@
         "heat_score": "hotScore",
         "rank": "index",
         "url": "url",
-        "domain_tag": null
+        "domain_tag": "desc",
+        "trend": "hotChange"
       },
       "url_template": null,
       "default_domain": "综合",
@@ -76,12 +84,13 @@
         "item_count": 50,
         "sample_file": "testdemo/api_probe/baidu_board.json"
       },
-      "notes": "platform=pc 变体才返回 hotScore；platform=wise 无热度值。列表嵌套两层 content，list_path 数字段为数组下标"
+      "notes": "platform=pc 变体才返回 hotScore。hotChange（如\"2180\"）记录热度变化量，可反映上升趋势。列表嵌套两层 content，list_path 数字段为数组下标"
     },
     {
       "id": "toutiao_hot",
       "name": "头条热榜",
       "platform": "toutiao",
+      "list_type": "hot",
       "enabled": true,
       "type": "json_api",
       "url": "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc",
@@ -93,7 +102,8 @@
         "heat_score": "HotValue",
         "rank": null,
         "url": "Url",
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": null,
       "default_domain": "综合",
@@ -108,12 +118,13 @@
         "item_count": 50,
         "sample_file": "testdemo/api_probe/toutiao_hot_board.json"
       },
-      "notes": "字段名为大驼峰。无 rank 字段，数组顺序即排名，由采集器按顺序补 rank"
+      "notes": "字段名为大驼峰。无 rank 字段，数组顺序即排名，由采集器按顺序补 rank。无独立的趋势/增量字段。"
     },
     {
       "id": "bilibili_hot_search",
       "name": "B站热搜",
       "platform": "bilibili",
+      "list_type": "hot",
       "enabled": true,
       "type": "json_api",
       "url": "https://api.bilibili.com/x/web-interface/search/square?limit=10",
@@ -125,7 +136,8 @@
         "heat_score": "heat_score",
         "rank": null,
         "url": null,
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": "https://search.bilibili.com/all?keyword={title}",
       "default_domain": "综合",
@@ -140,12 +152,13 @@
         "item_count": 10,
         "sample_file": "testdemo/api_probe/bilibili_search_square.json"
       },
-      "notes": "官方接口，条目少（约 10 条）但带热度值，最接近“热榜”语义"
+      "notes": "热度榜：官方接口，条目少（约10条）但带热度值。"
     },
     {
       "id": "bilibili_popular",
       "name": "B站热门视频",
       "platform": "bilibili",
+      "list_type": "hot",
       "enabled": true,
       "type": "json_api",
       "url": "https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1",
@@ -157,7 +170,8 @@
         "heat_score": "stat.view",
         "rank": null,
         "url": null,
-        "domain_tag": "tname"
+        "domain_tag": "tname",
+        "trend": null
       },
       "url_template": "https://www.bilibili.com/video/{bvid}",
       "default_domain": "综合",
@@ -172,12 +186,85 @@
         "item_count": 20,
         "sample_file": "testdemo/api_probe/bilibili_popular.json"
       },
-      "notes": "无热搜指数，以播放量代热度。tname 是视频分区（如“手机游戏”），是最可靠的领域标签来源"
+      "notes": "热度榜：无热搜指数，以播放量代热度。tname 是视频分区，是最可靠的领域标签来源。"
     },
+
+    {
+      "id": "bilibili_trending",
+      "name": "B站搜索趋势",
+      "platform": "bilibili",
+      "list_type": "rising",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://app.bilibili.com/x/v2/search/trending/ranking?limit=30",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+      },
+      "params": {},
+      "list_path": "data.list",
+      "field_map": {
+        "title": "show_name",
+        "heat_score": null,
+        "rank": "position",
+        "url": null,
+        "domain_tag": null,
+        "trend": null
+      },
+      "url_template": "https://search.bilibili.com/all?keyword={keyword}",
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "搜索趋势排行（无线热度值，仅排名）",
+        "magnitude_observed": "无",
+        "normalization": "none"
+      },
+      "probe": {
+        "last_verified": "2026-07-22",
+        "status": "ok",
+        "item_count": 30,
+        "sample_file": null
+      },
+      "notes": "增量榜：B站移动端搜索趋势接口，反映正在快速上升的搜索词。无热度绝对值，以 rank 为指标。需要移动端 UA 避免被拦。"
+    },
+    {
+      "id": "baidu_rising",
+      "name": "百度上升热搜",
+      "platform": "baidu",
+      "list_type": "rising",
+      "enabled": true,
+      "type": "json_api",
+      "url": "https://top.baidu.com/api/board?platform=pc&tab=rising",
+      "headers": { "Referer": "https://top.baidu.com/board" },
+      "params": {},
+      "list_path": "data.cards.0.content",
+      "field_map": {
+        "title": "word",
+        "heat_score": "hotChange",
+        "rank": "index",
+        "url": "url",
+        "domain_tag": "desc",
+        "trend": "hotChange"
+      },
+      "url_template": null,
+      "default_domain": "综合",
+      "heat_meta": {
+        "unit": "热度变化量（hotChange，反映上升幅度）",
+        "magnitude_observed": "1e5（十万级）",
+        "normalization": "pending"
+      },
+      "probe": {
+        "last_verified": "2026-07-22",
+        "status": "need_verify",
+        "item_count": 0,
+        "sample_file": null
+      },
+      "notes": "增量榜：尝试使用 tab=rising 获取上升最快榜单。若该端点不存在则自动降级（产生 error 但不阻断流程）。hotChange 作为上升幅度的代理值。"
+    },
+
     {
       "id": "xiaohongshu_hot",
       "name": "小红书热点",
       "platform": "xiaohongshu",
+      "list_type": "hot",
       "enabled": false,
       "type": "json_api",
       "url": "",
@@ -189,7 +276,8 @@
         "heat_score": null,
         "rank": null,
         "url": null,
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": null,
       "default_domain": "综合",
@@ -204,12 +292,13 @@
         "item_count": 0,
         "sample_file": null
       },
-      "notes": "无公开热榜接口。已验证：韩小韩、DailyHot 公共实例域名均无法解析。可选路径：①自建开源聚合服务（如 DailyHot）；②付费聚合 API（需 API key）；③暂时放弃该平台，v1 用其余 5 源"
+      "notes": "无公开热榜接口。已验证：韩小韩、DailyHot 公共实例域名均无法解析。"
     },
     {
       "id": "backup_60s_weibo",
       "name": "60s聚合-微博（备用）",
       "platform": "weibo",
+      "list_type": "hot",
       "enabled": false,
       "type": "json_api",
       "url": "https://60s-api.viki.moe/v2/weibo",
@@ -221,7 +310,8 @@
         "heat_score": "hot_value",
         "rank": "rank",
         "url": "link",
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": null,
       "default_domain": "综合",
@@ -236,12 +326,13 @@
         "item_count": 50,
         "sample_file": "testdemo/api_probe/60s_weibo.json"
       },
-      "notes": "第三方中转，字段已归一（title/hot_value/link），官方接口失效时启用"
+      "notes": "第三方中转，字段已归一。官方接口失效时启用。"
     },
     {
       "id": "backup_60s_toutiao",
       "name": "60s聚合-头条（备用）",
       "platform": "toutiao",
+      "list_type": "hot",
       "enabled": false,
       "type": "json_api",
       "url": "https://60s-api.viki.moe/v2/toutiao",
@@ -253,7 +344,8 @@
         "heat_score": "hot_value",
         "rank": null,
         "url": "link",
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": null,
       "default_domain": "综合",
@@ -268,12 +360,13 @@
         "item_count": 50,
         "sample_file": "testdemo/api_probe/60s_toutiao.json"
       },
-      "notes": "第三方中转，官方接口失效时启用"
+      "notes": "第三方中转，官方接口失效时启用。"
     },
     {
       "id": "backup_60s_baidu",
       "name": "60s聚合-百度（备用）",
       "platform": "baidu",
+      "list_type": "hot",
       "enabled": false,
       "type": "json_api",
       "url": "https://60s-api.viki.moe/v2/baidu/hot",
@@ -285,7 +378,8 @@
         "heat_score": null,
         "rank": "rank",
         "url": "link",
-        "domain_tag": null
+        "domain_tag": null,
+        "trend": null
       },
       "url_template": null,
       "default_domain": "综合",
@@ -300,7 +394,7 @@
         "item_count": 50,
         "sample_file": null
       },
-      "notes": "备用通道，无热度字段，heat_score 将为 0"
+      "notes": "备用通道，无热度字段，heat_score 将为 0。"
     }
   ]
 }
