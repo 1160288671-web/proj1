@@ -1,0 +1,36 @@
+# Python bytecode cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+*venv*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project output
+output/
+data/*.json
+data/testdemo/
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Python
+*.egg-info/
+dist/
+build/

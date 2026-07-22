@@ -13,6 +13,7 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 from urllib.parse import quote
 
 import httpx
@@ -147,7 +148,7 @@ class A1Collector(ExecutionAgent):
             })
         return entries
 
-    def _pick(self, item: dict, field: str | None):
+    def _pick(self, item: dict, field: Optional[str]):
         """按字段映射取值，支持嵌套路径（如 stat.view）；field 为 None 返回 None"""
         if not field:
             return None

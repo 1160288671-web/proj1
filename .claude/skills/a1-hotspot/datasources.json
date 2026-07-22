@@ -230,7 +230,7 @@
       "name": "百度上升热搜",
       "platform": "baidu",
       "list_type": "rising",
-      "enabled": true,
+      "enabled": false,
       "type": "json_api",
       "url": "https://top.baidu.com/api/board?platform=pc&tab=rising",
       "headers": { "Referer": "https://top.baidu.com/board" },
@@ -253,11 +253,11 @@
       },
       "probe": {
         "last_verified": "2026-07-22",
-        "status": "need_verify",
+        "status": "unavailable",
         "item_count": 0,
         "sample_file": null
       },
-      "notes": "增量榜：尝试使用 tab=rising 获取上升最快榜单。若该端点不存在则自动降级（产生 error 但不阻断流程）。hotChange 作为上升幅度的代理值。"
+      "notes": "增量榜：tab=rising 端点不存在，返回结构与实时榜不同，无法使用。已禁用。"
     },
 
     {
