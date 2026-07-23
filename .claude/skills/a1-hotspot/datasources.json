@@ -2,7 +2,7 @@
   "version": "0.3",
   "updated_at": "2026-07-22",
   "output": {
-    "path": "data/hot_raw.json",
+    "path": "data/a1_data/hot_raw_{date}.json",
     "top_n_per_source": 20,
     "dedup": "cross_source_keep",
     "dedup_note": "跨源重复条目保留（重复本身是热度信号），去重判断归 A2",

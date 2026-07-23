@@ -10,7 +10,9 @@ async def main():
     result = await collector.run(state)
 
     # 读取落盘文件
-    out_path = Path("data/hot_raw.json")
+    from datetime import datetime
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    out_path = Path(f"data/a1_data/hot_raw_{date_str}.json")
     if out_path.exists():
         print(f"\n{'='*60}")
         print(f"输出文件: {out_path}")

@@ -22,7 +22,7 @@ Thumbs.db
 
 # Project output
 output/
-data/*.json
+data/a1_data/
 data/testdemo/
 
 # Environment secrets
