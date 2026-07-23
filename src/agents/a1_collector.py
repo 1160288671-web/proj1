@@ -183,10 +183,10 @@ class A1Collector(ExecutionAgent):
     # ---------- 落盘 ----------
 
     def _write_output(self, state: dict, source_stats: dict):
-        """A1 自行落盘 data/a1_data/hot_raw_{date}.json（含 meta 信封 + 榜单类型统计）"""
+        """A1 自行落盘 data/a1_data/{date}/hot_raw_{date}.json（含 meta 信封 + 榜单类型统计）"""
         config = self._load_config()
-        date_str = datetime.now().strftime("%Y-%m-%d")
-        path_template = config.get("output", {}).get("path", "data/a1_data/hot_raw_{date}.json")
+        date_str = datetime.now().strftime("%Y%m%d")
+        path_template = config.get("output", {}).get("path", "data/a1_data/{date}/hot_raw_{date}.json")
         out_path = Path(path_template.replace("{date}", date_str))
         out_path.parent.mkdir(parents=True, exist_ok=True)
 

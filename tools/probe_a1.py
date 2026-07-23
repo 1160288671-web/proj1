@@ -12,7 +12,6 @@ from pathlib import Path
 import requests
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUT = PROJECT_ROOT / "data" / "a1_data" / "probe"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
@@ -38,7 +37,7 @@ ENDPOINTS = [
 ]
 
 
-def probe(eid, desc, url, extra_headers, date_str: str):
+def probe(eid, desc, url, extra_headers, date_str: str, out_dir: Path):
     headers = {"User-Agent": UA, "Accept": "application/json, text/plain, */*"}
     headers.update(extra_headers)
     result = {"id": eid, "desc": desc, "url": url, "ok": False, "status": None,
@@ -56,12 +55,12 @@ def probe(eid, desc, url, extra_headers, date_str: str):
             data = resp.json()
             result["top_keys"] = list(data.keys())[:10] if isinstance(data, dict) else f"list[{len(data)}]"
             # 保存完整样本（截断到前 60KB 防爆）
-            (OUT / f"{eid}_{date_str}.json").write_text(
+            (out_dir / f"{eid}_{date_str}.json").write_text(
                 json.dumps(data, ensure_ascii=False, indent=2)[:60000], encoding="utf-8")
             result["ok"] = True
         except json.JSONDecodeError:
             result["error"] = f"非JSON响应({len(text)}字符): {text[:120]!r}"
-            (OUT / f"{eid}_{date_str}.txt").write_text(text[:20000], encoding="utf-8")
+            (out_dir / f"{eid}_{date_str}.txt").write_text(text[:20000], encoding="utf-8")
     except Exception as e:
         result["ms"] = int((time.time() - t0) * 1000)
         result["error"] = f"{type(e).__name__}: {e}"
@@ -69,19 +68,20 @@ def probe(eid, desc, url, extra_headers, date_str: str):
 
 
 def main():
-    OUT.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
+    out_dir = PROJECT_ROOT / "data" / "a1_data" / date_str / "probe"
+    out_dir.mkdir(parents=True, exist_ok=True)
     results = []
     for eid, desc, url, hdrs in ENDPOINTS:
-        r = probe(eid, desc, url, hdrs, date_str)
+        r = probe(eid, desc, url, hdrs, date_str, out_dir)
         results.append(r)
         mark = "✅" if r["ok"] else "❌"
         print(f"{mark} {r['id']:<26} {r['status'] or '-':<4} {r['ms']:>6}ms  "
               f"{r['error'] or ('keys=' + str(r['top_keys']))}")
-    (OUT / f"probe_summary_{date_str}.json").write_text(
+    (out_dir / f"probe_summary_{date_str}.json").write_text(
         json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
     ok = sum(1 for r in results if r["ok"])
-    print(f"\n可用 {ok}/{len(results)}，样本已保存到 {OUT}")
+    print(f"\n可用 {ok}/{len(results)}，样本已保存到 {out_dir}")
 
 
 if __name__ == "__main__":
