@@ -23,7 +23,6 @@ Thumbs.db
 # Project output
 output/
 data/a1_data/
-data/testdemo/
 
 # Environment secrets
 .env

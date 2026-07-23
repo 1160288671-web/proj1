@@ -48,7 +48,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 52,
-        "sample_file": "testdemo/api_probe/weibo_hot_search.json"
+        "sample_file": "a1_data/probe/weibo_hot_search.json"
       },
       "notes": "半官方接口。flag_desc 仅部分条目有值（如“剧集”“综艺”），空时回落 default_domain。label_name 为趋势标记（新/热/爆）"
     },
@@ -82,7 +82,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 50,
-        "sample_file": "testdemo/api_probe/baidu_board.json"
+        "sample_file": "a1_data/probe/baidu_board.json"
       },
       "notes": "platform=pc 变体才返回 hotScore。hotChange（如\"2180\"）记录热度变化量，可反映上升趋势。列表嵌套两层 content，list_path 数字段为数组下标"
     },
@@ -116,7 +116,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 50,
-        "sample_file": "testdemo/api_probe/toutiao_hot_board.json"
+        "sample_file": "a1_data/probe/toutiao_hot_board.json"
       },
       "notes": "字段名为大驼峰。无 rank 字段，数组顺序即排名，由采集器按顺序补 rank。无独立的趋势/增量字段。"
     },
@@ -150,7 +150,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 10,
-        "sample_file": "testdemo/api_probe/bilibili_search_square.json"
+        "sample_file": "a1_data/probe/bilibili_search_square.json"
       },
       "notes": "热度榜：官方接口，条目少（约10条）但带热度值。"
     },
@@ -184,7 +184,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 20,
-        "sample_file": "testdemo/api_probe/bilibili_popular.json"
+        "sample_file": "a1_data/probe/bilibili_popular.json"
       },
       "notes": "热度榜：无热搜指数，以播放量代热度。tname 是视频分区，是最可靠的领域标签来源。"
     },
@@ -324,7 +324,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 50,
-        "sample_file": "testdemo/api_probe/60s_weibo.json"
+        "sample_file": "a1_data/probe/60s_weibo.json"
       },
       "notes": "第三方中转，字段已归一。官方接口失效时启用。"
     },
@@ -358,7 +358,7 @@
         "last_verified": "2026-07-19",
         "status": "ok",
         "item_count": 50,
-        "sample_file": "testdemo/api_probe/60s_toutiao.json"
+        "sample_file": "a1_data/probe/60s_toutiao.json"
       },
       "notes": "第三方中转，官方接口失效时启用。"
     },

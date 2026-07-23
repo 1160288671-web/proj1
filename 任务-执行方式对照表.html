@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频生成工作流 · 任务-执行方式对照表</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --ink: #1f2329;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --llm: #7c3aed;
+    --llm-bg: #f3eefe;
+    --script: #0e7a5f;
+    --script-bg: #e6f6f1;
+    --tool: #b45309;
+    --tool-bg: #fdf3e3;
+    --human: #b91c1c;
+    --human-bg: #fdeaea;
+    --warn: #b45309;
+    --warn-bg: #fff7ed;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    padding: 40px 20px 80px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  header { margin-bottom: 28px; }
+  h1 { font-size: 26px; letter-spacing: 0.5px; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin: 18px 0 8px; font-size: 13px;
+  }
+  .chip {
+    display: inline-block; padding: 2px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+  }
+  .chip.llm    { color: var(--llm);    background: var(--llm-bg); }
+  .chip.script { color: var(--script); background: var(--script-bg); }
+  .chip.tool   { color: var(--tool);   background: var(--tool-bg); }
+  .chip.human  { color: var(--human);  background: var(--human-bg); }
+
+  .summary-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px; margin: 22px 0 34px;
+  }
+  .scard {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .scard .stage { font-size: 13px; color: var(--muted); }
+  .scard .verdict { font-size: 17px; font-weight: 700; margin-top: 4px; }
+  .scard .llm-count { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  section.stage-block {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 22px;
+  }
+  section.stage-block h2 { font-size: 18px; margin-bottom: 4px; }
+  section.stage-block .tagline { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; background: #fafbfc; }
+  tr:last-child td { border-bottom: none; }
+  td .chip { font-size: 11.5px; padding: 1px 10px; }
+  .note {
+    margin-top: 14px; font-size: 13px; color: var(--muted);
+    border-left: 3px solid var(--line); padding-left: 12px;
+  }
+
+  .warn-box {
+    background: var(--warn-bg); border: 1px solid #f3d9b0;
+    border-radius: 14px; padding: 20px 24px; margin-bottom: 22px;
+  }
+  .warn-box h2 { font-size: 17px; color: var(--warn); margin-bottom: 10px; }
+  .warn-box ol { padding-left: 20px; font-size: 14px; }
+  .warn-box li { margin-bottom: 10px; }
+  .warn-box b { color: var(--ink); }
+
+  .conclusion {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 24px;
+  }
+  .conclusion h2 { font-size: 18px; margin-bottom: 12px; }
+  .conclusion h3 { font-size: 15px; margin: 14px 0 6px; }
+  .conclusion ul, .conclusion ol { padding-left: 22px; font-size: 14px; }
+  .conclusion li { margin-bottom: 6px; }
+  footer { margin-top: 30px; font-size: 12px; color: var(--muted); text-align: center; }
+  @media (max-width: 640px) {
+    body { padding: 24px 12px 60px; }
+    th:nth-child(3), td:nth-child(3) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>视频生成工作流 · 任务-执行方式对照表</h1>
+    <div class="meta">依据《视频生成工作流设计初稿.md》v0.1（开环版） · 用途：划分 agent（LLM）与脚本的实现边界</div>
+    <div class="legend">
+      <span class="chip llm">LLM · 必须调用大模型</span>
+      <span class="chip script">脚本 · 纯代码/规则执行</span>
+      <span class="chip tool">工具 · 外部服务调用（TTS/生图/ffmpeg）</span>
+      <span class="chip human">人工 · 人工介入</span>
+    </div>
+  </header>
+
+  <div class="summary-cards">
+    <div class="scard"><div class="stage">A1 热点采集</div><div class="verdict" style="color:var(--script)">纯脚本</div><div class="llm-count">LLM 调用：0</div></div>
+    <div class="scard"><div class="stage">A2 选题裁决</div><div class="verdict" style="color:var(--llm)">LLM 为主</div><div class="llm-count">LLM：组合假设 + 四维打分</div></div>
+    <div class="scard"><div class="stage">A3 素材采集清洗</div><div class="verdict" style="color:var(--script)">脚本为主</div><div class="llm-count">LLM：组合选题 query 转写</div></div>
+    <div class="scard"><div class="stage">A4 编剧</div><div class="verdict" style="color:var(--llm)">LLM 密度最高</div><div class="llm-count">LLM：定位 / 写稿 / 分镜 / 报告</div></div>
+    <div class="scard"><div class="stage">A5 音画制作</div><div class="verdict" style="color:var(--tool)">固定管线</div><div class="llm-count">LLM 调用：0（工具调度）</div></div>
+    <div class="scard"><div class="stage">A6 发布打包</div><div class="verdict" style="color:var(--human)">脚本 + 人工</div><div class="llm-count">LLM：标题定稿（可选）</div></div>
+    <div class="scard"><div class="stage">A7 数据回收</div><div class="verdict" style="color:var(--llm)">混合（本期不实现）</div><div class="llm-count">LLM：归因复盘</div></div>
+  </div>
+
+  <section class="stage-block">
+    <h2>A1 热点采集</h2>
+    <div class="tagline">纯脚本 · 0 次 LLM 调用</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>读取数据源配置</td><td><span class="chip script">脚本</span></td><td>数据源清单做成配置文件</td></tr>
+      <tr><td>调用热榜 API / RSS 拉取条目</td><td><span class="chip script">脚本</span></td><td>HTTP 请求，设计稿明确"禁止 agent 临场写爬虫"</td></tr>
+      <tr><td>原样结构化输出 hot_raw.json</td><td><span class="chip script">脚本</span></td><td>不做任何判断，只做格式封装</td></tr>
+    </table>
+  </section>
+
+  <section class="stage-block">
+    <h2>A2 选题裁决</h2>
+    <div class="tagline">LLM 为主 · 脚本辅助</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>领域过滤（仅泛娱乐）</td><td><span class="chip script">脚本（可用）</span></td><td>白名单关键词匹配；边界模糊条目才需 LLM 兜底</td></tr>
+      <tr><td>敏感词过滤</td><td><span class="chip script">脚本（可用）</span></td><td>敏感词表匹配，规则确定</td></tr>
+      <tr><td>单一 / 组合候选生成</td><td><span class="chip llm">LLM</span></td><td>两两组合穷举可用脚本，但"值得组合"的判断需 LLM</td></tr>
+      <tr><td>关联假设生成（1–3 条/组合）</td><td><span class="chip llm">LLM</span></td><td>"A 的 X 与 B 的 Y 因为 Z"句式，写不出即淘汰</td></tr>
+      <tr><td>四维打分（热度/安全性/可制作性/素材丰富度）</td><td><span class="chip llm">LLM</span></td><td>"预判"类打分无确定规则，按 rubric 评</td></tr>
+      <tr><td>加权求和、排序、放行 3 个</td><td><span class="chip script">脚本</span></td><td>纯算术，权重可配置</td></tr>
+      <tr><td>输出 topics.json</td><td><span class="chip script">脚本</span></td><td>格式封装 + schema 校验</td></tr>
+    </table>
+  </section>
+
+  <section class="stage-block">
+    <h2>A3 素材采集清洗</h2>
+    <div class="tagline">脚本为主 · query 生成需 LLM</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>query 生成（单一选题关键词扩展）</td><td><span class="chip script">脚本（可用）</span></td><td>模板化扩展即可</td></tr>
+      <tr><td>query 生成（组合选题：假设 → 3–5 搜索词）</td><td><span class="chip llm">LLM</span></td><td>从自然语言假设中抽实体词 + 关系词</td></tr>
+      <tr><td>素材抓取（RSS / 开放新闻源）</td><td><span class="chip script">脚本</span></td><td>HTTP 请求</td></tr>
+      <tr><td>字数过滤（&lt; 500 丢弃）</td><td><span class="chip script">脚本</span></td><td>设计稿明确"全部由代码执行"</td></tr>
+      <tr><td>embedding 相似度判重（≥ 0.85 成簇）</td><td><span class="chip script">脚本</span></td><td>调 embedding 模型 + 阈值比较，非 LLM 判断</td></tr>
+      <tr><td>信息密度打分（满分 9）</td><td><span class="chip script">脚本 ⚠️</span></td><td>设计稿声明代码执行，但见下方"待修正点 1"</td></tr>
+      <tr><td>簇内择优、Top 8 排序、不足标记 warning</td><td><span class="chip script">脚本</span></td><td>纯排序逻辑</td></tr>
+      <tr><td>假设验证回填（verified: false）</td><td><span class="chip script">脚本</span></td><td>检索结果为空即标记</td></tr>
+    </table>
+  </section>
+
+  <section class="stage-block">
+    <h2>A4 编剧</h2>
+    <div class="tagline">核心 LLM 环节 · 全链路 LLM 密度最高</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>阅读素材、理解事件</td><td><span class="chip llm">LLM</span></td><td>—</td></tr>
+      <tr><td>定体验定位（主攻 1 + 辅攻 1）</td><td><span class="chip llm">LLM</span></td><td>对照体验映射表；可推翻 A2 的 hint 但须写理由</td></tr>
+      <tr><td>写口播稿（钩子 + 正文，棒读语感）</td><td><span class="chip llm">LLM</span></td><td>核心创作任务，口语化短句</td></tr>
+      <tr><td>拆分镜（情绪标签 / transition / bpm_hint）</td><td><span class="chip llm">LLM</span></td><td>受控词表约束下的结构化生成</td></tr>
+      <tr><td>时长字数换算（目标时长 × 4.5 字/秒）</td><td><span class="chip script">脚本</span></td><td>纯算术，可在 prompt 前预计算注入</td></tr>
+      <tr><td>素材不足时收窄选题或放弃的决定</td><td><span class="chip llm">LLM</span></td><td>开环版允许 A4 跳过选题并在报告中说明</td></tr>
+      <tr><td>schema 字段校验、Σduration 校验</td><td><span class="chip script">脚本</span></td><td>信封校验点</td></tr>
+      <tr><td>生成 脚本报告.md（人读）</td><td><span class="chip llm">LLM</span></td><td>含体验定位理由的说明文</td></tr>
+    </table>
+  </section>
+
+  <section class="stage-block">
+    <h2>A5 音画制作</h2>
+    <div class="tagline">固定管线 · 0 次 LLM 调用</div>
+    <table>
+      <tr><th>子任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>TTS 配音</td><td><span class="chip tool">工具</span></td><td>调 TTS 服务，语速默认 1.0</td></tr>
+      <tr><td>音色选择（情绪标签 → 音色表）</td><td><span class="chip script">脚本</span></td><td>查受控映射表</td></tr>
+      <tr><td>BGM 选配（标签检索 + BPM 对齐）</td><td><span class="chip script">脚本</span></td><td>曲库标签映射 + 数值匹配，不做乐理分析</td></tr>
+      <tr><td>背景图生成 / 图库检索</td><td><span class="chip tool">工具</span></td><td>AI 生图（生成模型）或图库检索</td></tr>
+      <tr><td>全局风格后缀追加</td><td><span class="chip script">脚本</span></td><td>字符串拼接，保证同条视频画风一致</td></tr>
+      <tr><td>字幕生成</td><td><span class="chip script">脚本</span></td><td>从 TTS 时间轴自动切分</td></tr>
+      <tr><td>合成渲染</td><td><span class="chip script">脚本</span></td><td>ffmpeg 固定管线，"agent 只填参数不决策"</td></tr>
+      <tr><td>记录 production.json（溯源用）</td><td><span class="chip script">脚本</span></td><td>参数落盘</td></tr>
+    </table>
+    <div class="note">Agent 在 A5 的角色只是按序调度工具和填参数，理论上不需要 LLM 判断。</div>
+  </section>
+
+  <section class="stage-block">
+    <h2>A6 发布打包</h2>
+    <div class="tagline">脚本 + 人工 · 标题定稿可借助 LLM</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>标题 / 简介 / 标签定稿</td><td><span class="chip llm">LLM（轻量，可选）</span></td><td>只做"从 title_options 3 选 1"可用脚本；需平台风格润色则需 LLM</td></tr>
+      <tr><td>封面选择</td><td><span class="chip script">脚本</span> / <span class="chip human">人工</span></td><td>从分镜背景图中选取</td></tr>
+      <tr><td>文件打包进待发布目录</td><td><span class="chip script">脚本</span></td><td>文件操作</td></tr>
+      <tr><td>生成 publish.json</td><td><span class="chip script">脚本</span></td><td>—</td></tr>
+      <tr><td>人工放行</td><td><span class="chip human">人工</span></td><td>设计稿明确"不自动上传"</td></tr>
+    </table>
+  </section>
+
+  <section class="stage-block">
+    <h2>A7 数据回收</h2>
+    <div class="tagline">本期只定义接口 · 混合模式</div>
+    <table>
+      <tr><th>任务</th><th>执行方式</th><th>说明</th></tr>
+      <tr><td>CSV 导入、指标计算（5 项核心指标）</td><td><span class="chip script">脚本</span></td><td>纯统计</td></tr>
+      <tr><td>输出 performance.json</td><td><span class="chip script">脚本</span></td><td>—</td></tr>
+      <tr><td>归因分析、写 复盘报告.md</td><td><span class="chip llm">LLM</span></td><td>把指标与体验 / 情绪标签关联解读</td></tr>
+      <tr><td>聚合归因标签、更新 A2 打分权重</td><td><span class="chip script">脚本</span></td><td>数值更新，规则确定后可自动化</td></tr>
+    </table>
+  </section>
+
+  <div class="warn-box">
+    <h2>⚠️ 待修正的模糊地带（2 处）</h2>
+    <ol>
+      <li><b>信息密度打分中"含因果解释（非纯情绪宣泄）：+2"</b> —— 数据、人名、时间线、引语可用正则 / NER 判定，但"是否含因果解释"本质是语义理解任务，纯代码很难可靠判定。建议改为代理指标（如因果连接词出现频率），或显式承认该项需 LLM。</li>
+      <li><b>A2 领域过滤、敏感过滤、A3 单一选题 query 扩展</b> —— 目前挂在 agent 名下，但完全可以脚本化。下沉后能显著降低 LLM 调用次数与输出不确定性。</li>
+    </ol>
+  </div>
+
+  <div class="conclusion">
+    <h2>总体结论</h2>
+    <h3>必须调 LLM 的任务（4 类，集中在 A2 / A4 / A7）</h3>
+    <ol>
+      <li>A2：组合关联假设生成 + 四维打分</li>
+      <li>A3：组合选题搜索词转写</li>
+      <li>A4：全部创作任务（体验定位、写稿、分镜、人读报告）</li>
+      <li>A7：归因复盘（本期不实现）</li>
+    </ol>
+    <h3>纯脚本 / 工具即可的任务</h3>
+    <ul>
+      <li>A1 全部（配置读取、API 拉取、结构化封装）</li>
+      <li>A2 / A3 的过滤、算术、检索、去重、排序</li>
+      <li>A5 全部（TTS / BGM / 生图 / 字幕 / ffmpeg 均为工具调用 + 查表映射）</li>
+      <li>A6 的打包与 publish.json 生成</li>
+      <li>各环节的 JSON 封装与 schema 校验</li>
+    </ul>
+  </div>
+
+  <footer>视频生成工作流 · 任务-执行方式对照表 · 依据设计初稿 v0.1 整理</footer>
+
+</div>
+</body>
+</html>

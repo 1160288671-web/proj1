@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""探测五个平台热榜接口的可用性，保存原始响应样本"""
+"""探测各平台热榜接口的可用性，保存原始响应样本
+
+输出目录：data/a1_data/probe/
+"""
 import json
 import sys
 import time
@@ -7,7 +10,8 @@ from pathlib import Path
 
 import requests
 
-OUT = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+OUT = PROJECT_ROOT / "data" / "a1_data" / "probe"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
@@ -64,6 +68,7 @@ def probe(eid, desc, url, extra_headers):
 
 
 def main():
+    OUT.mkdir(parents=True, exist_ok=True)
     results = []
     for eid, desc, url, hdrs in ENDPOINTS:
         r = probe(eid, desc, url, hdrs)
